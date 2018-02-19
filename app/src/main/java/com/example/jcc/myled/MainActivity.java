@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -72,7 +73,16 @@ public class MainActivity extends AppCompatActivity {
         deviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                git
+                // Get the device MAC address, the last 17 chars in the View
+                String info = ((TextView) view).getText().toString();//((TextView) v).getText().toString();
+                String address = info.substring(info.length() - 17);
+
+                // Make an intent to start next activity.
+                Intent intent = new Intent(MainActivity.this, LedControlActivity.class);
+
+                //Change the activity.
+                intent.putExtra(EXTRA_ADDRESS, address); //this will be received at ledControl (class) Activity
+                startActivity(intent);
             }
         });
     }
