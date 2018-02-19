@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class DeviceList extends AppCompatActivity {
 
     Button btnPaired;
     ListView deviceList;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 String address = info.substring(info.length() - 17);
 
                 // Make an intent to start next activity.
-                Intent intent = new Intent(MainActivity.this, LedControlActivity.class);
+                Intent intent = new Intent(DeviceList.this, LedControlActivity.class);
 
                 //Change the activity.
                 intent.putExtra(EXTRA_ADDRESS, address); //this will be received at ledControl (class) Activity
@@ -86,4 +86,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

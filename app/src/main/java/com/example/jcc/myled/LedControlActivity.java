@@ -8,11 +8,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class LedControlActivity extends AppCompatActivity {
 
@@ -22,6 +23,7 @@ public class LedControlActivity extends AppCompatActivity {
     String address = null;
     private boolean isBtConnected = false;
     private ProgressDialog progress;
+    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class LedControlActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        address = intent.getStringExtra(MainActivity.EXTRA_ADDRESS);
+        address = intent.getStringExtra(DeviceList.EXTRA_ADDRESS);
 
         setContentView(R.layout.activity_led_control);
 
@@ -37,8 +39,62 @@ public class LedControlActivity extends AppCompatActivity {
         btnoff = (Button)findViewById(R.id.button_off);
         btndisconnect = (Button)findViewById(R.id.button_disconnect);
 
+        new ConnectBT().execute();
+
+        btnon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turnOn();
+            }
+        });
+
+        btnoff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turnOff();
+            }
+        });
+
+        btndisconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disconnect();
+            }
+        });
     }
 
+    private void disconnect() {
+        if (btSocket!=null) //If the btSocket is busy
+        {
+            try
+            {
+                btSocket.close(); //close connection
+            }
+            catch (IOException e)
+            { msg("Error");}
+        }
+        finish(); //return to the first layout
+    }
+
+    private void turnOn(){
+        if(btSocket != null) {
+            try {
+                btSocket.getOutputStream().write("TF".getBytes());
+            } catch (IOException e) {
+                msg("Error");
+            }
+        }
+    }
+
+    private void turnOff(){
+        if(btSocket != null) {
+            try {
+                btSocket.getOutputStream().write("T0".getBytes());
+            } catch (IOException e) {
+                msg("Error");
+            }
+        }
+    }
     // fast way to call Toast
     private void msg(String s)
     {
